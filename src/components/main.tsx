@@ -70,8 +70,6 @@ class App extends React.Component<any,any> {
           fText: text,
         })
       })
-
-      
     });
   }
 
@@ -98,6 +96,8 @@ class App extends React.Component<any,any> {
       })
       this.params.image = kata;
       this.params.boxes = [];
+      let textB: any[] = [];
+      let confB: any[] = [];
       kataJson.analyzeResult.documentResults.map((data) => {
         let list = [''];
         list = [];
@@ -110,8 +110,8 @@ class App extends React.Component<any,any> {
         })
         type K = keyof typeof data.fields;
         list.forEach((i) => {
-          this.state.conf.push(data.fields[i as K].confidence)
-          this.state.text.push(data.fields[i as K].text)
+          confB.push(data.fields[i as K].confidence)
+          textB.push(data.fields[i as K].text)
           let BB = [];
           let bb0 = data.fields[i as K].boundingBox[0];
           let bb1 = data.fields[i as K].boundingBox[1];
@@ -129,8 +129,8 @@ class App extends React.Component<any,any> {
         data.lines.map((l) => {
           l.words.map(w => {
             console.log(w)
-            this.state.conf.push(w.confidence)
-            this.state.text.push(w.text)
+            confB.push(w.confidence)
+            textB.push(w.text)
             this.state.readRes.push(w)
             let boundB = [];
             boundB.push(w.boundingBox[0])
@@ -141,10 +141,16 @@ class App extends React.Component<any,any> {
           })
         })      
       })
+      this.setState({
+        text: textB,
+        conf: confB
+      })
     }
     if (e.value === 'Bayside Club'){
+      let textB: any[] = [];
+      let confB: any[] = [];
       this.setState({
-        image: bay
+        image: bay,
       })
       this.params.image = bay;
       this.params.boxes = [];
@@ -160,8 +166,8 @@ class App extends React.Component<any,any> {
         })
         type K = keyof typeof data.fields;
         list.forEach((i) => {
-          this.state.conf.push(data.fields[i as K].confidence)
-          this.state.text.push(data.fields[i as K].text)
+          confB.push(data.fields[i as K].confidence)
+          textB.push(data.fields[i as K].text)
           let BB = [];
           let bb0 = data.fields[i as K].boundingBox[0];
           let bb1 = data.fields[i as K].boundingBox[1];
@@ -179,8 +185,8 @@ class App extends React.Component<any,any> {
         data.lines.map((l) => {
           l.words.map(w => {
             console.log(w)
-            this.state.conf.push(w.confidence)
-            this.state.text.push(w.text)
+            confB.push(w.confidence)
+            textB.push(w.text)
             this.state.readRes.push(w)
             let boundB = [];
             boundB.push(w.boundingBox[0])
@@ -191,8 +197,14 @@ class App extends React.Component<any,any> {
           })
         })      
       })
+      this.setState({
+        text: textB,
+        conf: confB
+      })
     }
     if (e.value === 'ABC Goods Ltd'){
+      let textB: any[] = [];
+      let confB: any[] = [];
       this.setState({
         image: abc
       })
@@ -210,8 +222,8 @@ class App extends React.Component<any,any> {
         })
         type K = keyof typeof data.fields;
         list.forEach((i) => {
-          this.state.conf.push(data.fields[i as K].confidence)
-          this.state.text.push(data.fields[i as K].text)
+          confB.push(data.fields[i as K].confidence)
+          textB.push(data.fields[i as K].text)
           let BB = [];
           let bb0 = data.fields[i as K].boundingBox[0];
           let bb1 = data.fields[i as K].boundingBox[1];
@@ -228,8 +240,8 @@ class App extends React.Component<any,any> {
         data.lines.map((l) => {
           l.words.map(w => {
             console.log(w)
-            this.state.conf.push(w.confidence)
-            this.state.text.push(w.text)
+            confB.push(w.confidence)
+            textB.push(w.text)
             this.state.readRes.push(w)
             let boundB = [];
             boundB.push(w.boundingBox[0])
@@ -240,14 +252,20 @@ class App extends React.Component<any,any> {
           })
         })      
       })
+      this.setState({
+        text: textB,
+        conf: confB
+      })
     }
   }
 
   click(e: any){
+    let flag = 0;
     let x = e.clientX - e.target.offsetLeft;
     let y = e.clientY - e.target.offsetTop;
     this.state.readResBB.map((rB:any)=>{
       if (((x >= rB[0]) && (y >= rB[1]) && (x <= (rB[0] + rB[2])) && (y <= (rB[1] + rB[3])))){
+        flag = 1;
         if (!this.params.boxes.includes(rB)){
           this.params.boxes.push(rB)
         }else{
@@ -264,7 +282,7 @@ class App extends React.Component<any,any> {
       }
     })
     let enteredName = this.state.fName;
-    if (enteredName === ""){
+    if (enteredName === "" && flag === 1){
       const eName = prompt('Please enter Field Name')
       enteredName = eName!;
     }
